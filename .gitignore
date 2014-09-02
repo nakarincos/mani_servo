@@ -10,6 +10,8 @@
 *.dll
 
 # Compiled Static libraries
+build
+DXL_SDK_LINUX_v1_01
 *.lai
 *.la
 *.a
@@ -19,3 +21,4 @@
 *.exe
 *.out
 *.app
+
