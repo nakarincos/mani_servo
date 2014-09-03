@@ -7,6 +7,9 @@
 #include <termio.h>
 #include <unistd.h>
 #include <dynamixel.h>
+#include <iostream>
+
+using namespace std;
 
 // Control table address
 #define P_GOAL_POSITION_L	30
@@ -20,9 +23,6 @@
 // Defulat setting
 #define DEFAULT_BAUDNUM		1 // 1Mbps
 #define DEFAULT_ID		1
-
-
-#include "servo_manager.hpp"
 
 void PrintCommStatus(int CommStatus);
 void PrintErrorCode(void);
@@ -38,8 +38,6 @@ int main()
 	int CommStatus;
 
 	printf( "\n\nRead/Write example for Linux\n\n" );
-	ServoManager sm;
-	sm.hello_world();
 	///////// Open USB2Dynamixel ////////////
 	if( dxl_initialize(deviceIndex, baudnum) == 0 )
 	{
@@ -53,59 +51,28 @@ int main()
 
 	while(1)
 	{
+		// Set goal speed
+		int p1, p2, p3;
+		dxl_write_word( BROADCAST_ID, P_GOAL_SPEED_L, 0);
+		// Write goal position
+		//dxl_write_word( BROADCAST_ID, P_GOAL_POSITION_L, 0);
+
 		printf( "Press Enter key to continue!(press ESC and Enter to quit)\n" );
 		if(getchar() == 0x1b)
 			break;
-		// Set goal speed
-		dxl_write_word( BROADCAST_ID, P_GOAL_SPEED_L, 0 );
-		// Write goal position
-		dxl_write_word( BROADCAST_ID, P_GOAL_POSITION_L, GoalPos[index] );
-
-		do
-		{
-			// Read present position
-			PresentPos = dxl_read_word( BROADCAST_ID, P_PRESENT_POSITION_L );
-			CommStatus = dxl_get_result();
-
-			if( CommStatus == COMM_RXSUCCESS )
-			{
-				printf( "%d   %d\n",GoalPos[index], PresentPos );
-				PrintErrorCode();
-			}
-			else
-			{
-				PrintCommStatus(CommStatus);
-				break;
-			}
-
-			// Check moving done
-			Moving = dxl_read_byte( BROADCAST_ID, P_MOVING );
-			CommStatus = dxl_get_result();
-			if( CommStatus == COMM_RXSUCCESS )
-			{
-				if( Moving == 0 )
-				{
-					// Change goal position
-					if( index == 0 )
-						index = 1;
-					else
-						index = 0;					
-				}
-
-				PrintErrorCode();
-			}
-			else
-			{
-				PrintCommStatus(CommStatus);
-				break;
-			}
-		}while(Moving == 1);
-		//dxl_ping( BROADCAST_ID );
-		//if( dxl_get_result( ) == COMM_RXSUCCESS )
-		//{
-      		// Succeed to verify ID 2
-      	//	printf("Success to verify ID%d\n", BROADCAST_ID);
-		//}
+		cout << "Input id 11: ";
+		cin >> p1;
+		cout << "Input id 18: ";
+		cin >> p2;
+		cout << "Input id 20: ";
+		cin >> p3;
+		dxl_write_word( 11, P_GOAL_POSITION_L, p1);
+		//usleep(1*1000000); // micorsec
+		dxl_write_word( 18, P_GOAL_POSITION_L, p2);
+		//usleep(1*1000000); // micorsec
+		dxl_write_word( 20, P_GOAL_POSITION_L, p3);
+		//usleep(1*1000000); // micorsec
+		getchar();
 	}
 
 	// Close device
