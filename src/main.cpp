@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <dynamixel.h>
+#include <forward_kinematic.cpp>
 using namespace std;
 // Control table address
 #define P_GOAL_POSITION_L	30
@@ -45,7 +46,18 @@ int main()
 	int deviceIndex = 0;
 	int Moving, PresentPos;
 	int CommStatus;
-	//int id[4] = {1,11,18,20};
+	
+	//##############################################
+	//##        Initial Forward Kinematic         ##
+	//##############################################
+	input_alpha();
+	input_a();
+	input_d();
+	input_theta();
+	for(int i = 0 ; i < 4 ; i++){
+		reference_frame_calculator(i);
+	}
+	////////////////////////////////////////////////////
 	
 	printf( "\n\nRead/Write example for Linux\n\n" );
 	///////// Open USB2Dynamixel ////////////
