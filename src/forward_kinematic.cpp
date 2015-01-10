@@ -69,16 +69,34 @@ void reference_frame_calculator(int index){
 	REF_KINEMATIC_TABLE[index][3][2] = 0;
 	REF_KINEMATIC_TABLE[index][3][3] = 1;
 }
-void cross_matrix(){
-
+float* cross_matrix(float a[][], float b[][]){
+	float tmp_array[4][4];
+	float sum;
+	for(int count = 0 ; count < 4 ; count++){
+		for(int i = 0 ; i < 4 ; i++){
+			for(int j = 0 ; j < 4 ; j++){
+				sum += a[count][j] * b[j][i];
+			}
+			tmp_array[count][i] = sum;
+		}
+	}
+	for(int i = 0 ; i < 4 ; i++){
+		for(int j = 0 ; j < 4 ; j++){
+			count << tmp_array[i][j] << " ";
+		}
+		cout << endl;
+	}
+	return &tmp_array;
 }
+
 void goal_calculator(int from, int end){
 	from--;
 	end--;
 	GOAL_KINEMATIC_TABLE = REF_KINEMATIC_TABLE[from];
 	if(from == end)
 		return 0;
-	for(int i = from+1 ; i <= end ; i++){
-
+	for(int i = from+1 ; i < end ; i++){
+		&GOAL_KINEMATIC_TABLE =  cross_matrix(GOAL_KINEMATIC_TABLE, REF_KINEMATIC_TABLE[i]);
 	}
+	cout << "FINAL POSITION : " << GOAL_KINEMATIC_TABLE[0][3] << " , " << GOAL_KINEMATIC_TABLE[1][3] << " , " << GOAL_KINEMATIC_TABLE[2][3];
 }
