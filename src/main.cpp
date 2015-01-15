@@ -57,6 +57,7 @@ int main()
 	for(int i = 0 ; i < 4 ; i++){
 		reference_frame_calculator(i);
 	}
+	goal_calculator(1,4);
 	////////////////////////////////////////////////////
 	
 	printf( "\n\nRead/Write example for Linux\n\n" );
