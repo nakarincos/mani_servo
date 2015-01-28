@@ -9,65 +9,25 @@ float REF_KINEMATIC_TABLE[4][4][4];
 float GOAL_KINEMATIC_TABLE[4][4];
 ///// angle from Zi to Zi+1 measure about X /////
 void input_alpha(){
-	int i;
-	float input;
-	//printf("===== Input Alpha =====\n");
-	for(i = 0 ; i < 4 ; i++){
-		// printf("%d.)", i+1);
-		// scanf("%f", &input);
-		// INPUT_KINEMATIC_TABLE[i][0] = input;
+	for(int i = 0 ; i < 4 ; i++){
 		INPUT_KINEMATIC_TABLE[i][0] = 0;
 	}
 }
 ///// distance from Zi to Zi+1 measure along X /////
 void input_a(){
-	int i;
-	float input;
-	printf("===== Input A =====\n");
 	INPUT_KINEMATIC_TABLE[0][1] = 0;
-	// INPUT_KINEMATIC_TABLE[1][1] = 50+(40/PI);
-	// INPUT_KINEMATIC_TABLE[2][1] = 40/PI;
-	// INPUT_KINEMATIC_TABLE[3][1] = 0;
-	for(i = 1 ; i < 4 ; i++){
-		printf("%d.)", i+1);
-		scanf("%f", &input);
-		// INPUT_KINEMATIC_TABLE[i][1] = input;
-		INPUT_KINEMATIC_TABLE[i][1] = 50;
-	}
+	INPUT_KINEMATIC_TABLE[1][1] = 50+(40/PI);
+	INPUT_KINEMATIC_TABLE[2][1] = 40/PI;
+	INPUT_KINEMATIC_TABLE[3][1] = 50;
 }
 ///// distance from Xi-1 to Xi measure along Z /////
 void input_d(){
-	int i;
-	float input;
-	// printf("===== Input D =====\n");
-	for(i = 0 ; i < 4 ; i++){
-		// printf("%d.)", i+1);
-		// scanf("%f", &input);
-		// INPUT_KINEMATIC_TABLE[i][2] = input;
+	for(int i = 0 ; i < 4 ; i++){
 		INPUT_KINEMATIC_TABLE[i][2] = 0;
 	}
 }
-///// angle from Xi-1 to Xi measure about Z /////
-// void input_theta(){
-// 	int i;
-// 	float input;
-// 	printf("===== Input Theta =====\n");
-// 	for(i = 0 ; i < 4 ; i++){
-// 		printf("%d.)", i+1);
-// 		scanf("%f", &input);
-// 		INPUT_KINEMATIC_TABLE[i][3] = input;
-// 	}
-// }
-void input_theta(int input, int i){
-	// int i;
-	// float input;
-	// printf("===== Input Theta =====\n");
-	// for(i = 0 ; i < 4 ; i++){
-	// 	printf("%d.)", i+1);
-	// 	scanf("%f", &input);
-		INPUT_KINEMATIC_TABLE[i][3] = input;
-	// }
-}
+
+
 void reference_frame_calculator(int index){
 	float tmp;
 	REF_KINEMATIC_TABLE[index][0][0] = round(cos(INPUT_KINEMATIC_TABLE[index][3]*PI/180)*10000) / 10000;
@@ -132,7 +92,6 @@ void cross_matrix(float a[][4], float b[][4]){
 }
 
 void goal_calculator(int from, int end){
-	// cout << "from : " << from << " end : " << end << endl;
 	from--;	
 	end--;
 	for(int i = 0 ; i < 4 ; i++){
@@ -143,37 +102,44 @@ void goal_calculator(int from, int end){
 	if(from == end)
 		return;
 	for(int i = from+1 ; i <= end ; i++){
-		// cout << "GOAL : "<< endl;
-		// for(int k = 0 ; k < 4 ; k++){
-		// 	for(int x = 0 ; x < 4 ; x++){
-		// 		cout << GOAL_KINEMATIC_TABLE[k][x] << " ";
-		// 	}
-		// 	cout << endl;
-		// }
-		// cout << "REF : "<< endl;
-		// for(int k = 0 ; k < 4 ; k++){
-		// 	for(int x = 0 ; x < 4 ; x++){
-		// 		cout << REF_KINEMATIC_TABLE[i][k][x] << " ";
-		// 	}
-		// 	cout << endl;
-		// }
-		// cout << "========================" << endl;
 		cross_matrix(GOAL_KINEMATIC_TABLE, REF_KINEMATIC_TABLE[i]);
 	}
-	// cout << "FINAL POSITION : " << GOAL_KINEMATIC_TABLE[0][3] << " , " << GOAL_KINEMATIC_TABLE[1][3] << " , " << GOAL_KINEMATIC_TABLE[2][3] <<endl;
-	//ofstream myfile("angle.txt");
-	
-	//myfile << "Angle : " << i;
-	//myfile << "( " << GOAL_KINEMATIC_TABLE[0][3] << " , " << GOAL_KINEMATIC_TABLE[1][3] << " )\n";
-  	//myfile.close();
 
 }
 float getX(){
-	// return GOAL_KINEMATIC_TABLE[0][3];
-	return GOAL_KINEMATIC_TABLE[0][2];
+	return GOAL_KINEMATIC_TABLE[0][3];
+}
+float getY(){
+	return GOAL_KINEMATIC_TABLE[1][3];
 }
 
-float getY(){
-	// return GOAL_KINEMATIC_TABLE[1][3];
-	return GOAL_KINEMATIC_TABLE[1][2];
+void startTreePoint(){
+	// ##############################################
+	// ##        Initial Forward Kinematic         ##
+	// ##############################################
+	input_alpha();
+	input_a();
+	input_d();
+	ofstream myfile("angle2.txt");
+  	myfile << "=====================================\n";
+  	myfile << "           Angle from tree           \n";
+	myfile << "=====================================\n";
+	for(int i = 0 ; i <= 360 ; i++){
+		INPUT_KINEMATIC_TABLE[0][3] = 90;
+		INPUT_KINEMATIC_TABLE[1][3] = i;
+		INPUT_KINEMATIC_TABLE[2][3] = 0;
+		INPUT_KINEMATIC_TABLE[3][3] = 0;
+		for(int i = 0 ; i < 4 ; i++){
+			reference_frame_calculator(i);
+		}
+		
+		goal_calculator(1,4);
+		cout << "Angle from tree => " << i << endl;
+  		myfile << "Angle : " << i << "( "<< getX() <<" , "<< getY() <<" ) , ";
+  		goal_calculator(1,3);
+		cout << "Angle from tree => " << i << endl;
+  		myfile << "( "<< getX() <<" , "<< getY() <<" )\n";
+
+	}
+	myfile.close();
 }

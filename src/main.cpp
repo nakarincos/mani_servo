@@ -9,7 +9,11 @@
 #include <unistd.h>
 #include <math.h>
 #include <dynamixel.h>
-#include <forward_kinematic.cpp>
+#include <inverse_kinematic.cpp>
+// #include <tree_point.cpp>
+// #include <forward_kinematic.cpp>
+
+#include <fstream>
 using namespace std;
 // Control table address
 #define P_GOAL_POSITION_L	30
@@ -36,7 +40,7 @@ int mode;
 int speed;
 int is_continue = 0;
 int pos[4];
-
+int angle[3];
 int main()
 {
 	int baudnum = 1;
@@ -46,18 +50,51 @@ int main()
 	int deviceIndex = 0;
 	int Moving, PresentPos;
 	int CommStatus;
-	
+	float targetX, targetY;
+	// startTreePoint();
+	// ##############################################
+	// ##        Initial Inverse Kinematic         ##
+	// ##############################################
+	cout << "X: ";
+	cin >> targetX;	
+	cout << "Y: ";
+	cin >> targetY;
+	setTarget(targetX, targetY);
+	findAngle();
+	angle[0] = getID1();
+	angle[1] = getID2();
+	// angle[2] = getID3();
+	cout << "answer = " << angle[0] << " " << angle[1] << " " << angle[2] << endl;
 	//##############################################
 	//##        Initial Forward Kinematic         ##
 	//##############################################
-	input_alpha();
-	input_a();
-	input_d();
-	input_theta();
-	for(int i = 0 ; i < 4 ; i++){
-		reference_frame_calculator(i);
-	}
-	goal_calculator(1,4);
+	// input_alpha();
+	// input_a();
+	// input_d();
+	// input_theta();
+	// // ofstream myfile("angle.txt");
+ // //  	myfile << "=====================================\n";
+ // //  	myfile << "           Angle from tree           \n";
+	// // myfile << "=====================================\n";
+	// // for(int i = 0 ; i <= 360 ; i++){
+	// // 	INPUT_KINEMATIC_TABLE[0][3] = 90;
+	// // 	INPUT_KINEMATIC_TABLE[1][3] = i;
+	// // 	INPUT_KINEMATIC_TABLE[2][3] = 0;
+	// // 	INPUT_KINEMATIC_TABLE[3][3] = 0;
+	// // 	for(int i = 0 ; i < 4 ; i++){
+	// // 		reference_frame_calculator(i);
+	// // 	}
+		
+	// // 	goal_calculator(1,4);
+	// // 	cout << "Angle from tree => " << i << endl;
+ // //  		myfile << "Angle : " << i << "( "<< getX() <<" , "<< getY() <<" )\n";
+
+	// // }
+	// // myfile.close();
+	// for(int i = 0 ; i < 4 ; i++){
+	// 	reference_frame_calculator(i);
+	// }
+	// goal_calculator(1,4);
 	////////////////////////////////////////////////////
 	
 	printf( "\n\nRead/Write example for Linux\n\n" );
