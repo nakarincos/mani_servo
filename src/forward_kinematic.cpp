@@ -169,11 +169,11 @@ void goal_calculator(int from, int end){
 
 }
 float getX(){
-	// return GOAL_KINEMATIC_TABLE[0][3];
-	return GOAL_KINEMATIC_TABLE[0][2];
+	return GOAL_KINEMATIC_TABLE[0][3];
+	// return GOAL_KINEMATIC_TABLE[0][2];
 }
 
 float getY(){
-	// return GOAL_KINEMATIC_TABLE[1][3];
-	return GOAL_KINEMATIC_TABLE[1][2];
+	return GOAL_KINEMATIC_TABLE[1][3];
+	// return GOAL_KINEMATIC_TABLE[1][2];
 }

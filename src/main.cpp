@@ -61,10 +61,10 @@ int main()
 	cin >> targetY;
 	setTarget(targetX, targetY);
 	findAngle();
-	angle[0] = getID1();
-	angle[1] = getID2();
+	// angle[0] = getID1();
+	// angle[1] = getID2();
 	// angle[2] = getID3();
-	cout << "answer = " << angle[0] << " " << angle[1] << " " << angle[2] << endl;
+	// cout << "answer = " << angle[0] << " " << angle[1] << " " << angle[2] << endl;
 	//##############################################
 	//##        Initial Forward Kinematic         ##
 	//##############################################
