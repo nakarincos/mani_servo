@@ -63,70 +63,11 @@ void findAngle(){
 	myfile << "=====================================\n";
   	myfile << "             Point Moving            \n";
 	myfile << "=====================================\n";
-	while(i <= limit_angle[0].b){
-		j = limit_angle[1].a;
-		while(j <= limit_angle[1].b){
-			k = limit_angle[2].a;
-			while(k <= limit_angle[2].b){
-				input_theta(i, 0);
-				input_theta(j, 1);
-				input_theta(k, 2);
-				input_theta(0, 3);
-				for(int i = 0 ; i < 4 ; i++){
-					reference_frame_calculator(i);
-				}
-				goal_calculator(1,4);
-				//myfile << "ID1: " << i << " ID2: " << j << " ID3: " << k << " ( " << getX() << " , " << getY() << " )\n\n";
-				x = getX();
-				y = getY();
-				if(x <= goalX+1 && x >= goalX-1){
-					counterk = 1;
-					// myfile << "===== CRITICAL1 =====\n";
-					if(y <= goalY+1 && y >= goalY-1){
-						myfile << "=================\n";
-						myfile << "ID1: " << i << " ID2: " << j << " ID3: " << k << " ( " << getX() << " , " << getY() << " )\n";
-						myfile << "DIFF X: " << x-goalX << " ,Y: " << y-goalY << " \n";
-						tmp = abs(x-goalX) + abs(y-goalY);
-						myfile << "SUM DIFF =  " << tmp << " \n\n";
-						if(diff > tmp){
-							diff = tmp;
-							answer.a = x;
-							answer.b = y;
-							answer_Angle[0] = i;
-							answer_Angle[1] = j;
-							answer_Angle[2] = k;
-						}
-					}
-				}
-				else{
-					counterk = 10;
-				}
-				k += counterk;
-			}
-			if(x <= goalX+5 && x >= goalX-5){
-				counterj = 1;
-				// myfile << "===== CRITICAL2 =====\n";
-			}
-			else{
-				counterj = 10;
-			}
-			j += counterj;
-		}
-		if(x <= goalX+5 && x >= goalX-5){
-			counteri = 1;
-			// myfile << "===== CRITICAL3 =====\n";
-		}
-		else{
-			counteri = 10;
-		}
-		i += counteri;
-	}
-	///////////////////////////////////////////////////////////////
 	// while(i <= limit_angle[0].b){
 	// 	j = limit_angle[1].a;
 	// 	while(j <= limit_angle[1].b){
-	// 		// k = limit_angle[2].a;
-	// 		// while(k <= limit_angle[2].b){
+	// 		k = limit_angle[2].a;
+	// 		while(k <= limit_angle[2].b){
 	// 			input_theta(i, 0);
 	// 			input_theta(j, 1);
 	// 			input_theta(k, 2);
@@ -139,7 +80,7 @@ void findAngle(){
 	// 			x = getX();
 	// 			y = getY();
 	// 			if(x <= goalX+1 && x >= goalX-1){
-	// 				// counterk = 1;
+	// 				counterk = 1;
 	// 				// myfile << "===== CRITICAL1 =====\n";
 	// 				if(y <= goalY+1 && y >= goalY-1){
 	// 					myfile << "=================\n";
@@ -153,15 +94,15 @@ void findAngle(){
 	// 						answer.b = y;
 	// 						answer_Angle[0] = i;
 	// 						answer_Angle[1] = j;
-	// 						// answer_Angle[2] = k;
+	// 						answer_Angle[2] = k;
 	// 					}
 	// 				}
 	// 			}
-	// 			// else{
-	// 				// counterk = 10;
-	// 			// }
-	// 			// k += counterk;
-	// 		// }
+	// 			else{
+	// 				counterk = 10;
+	// 			}
+	// 			k += counterk;
+	// 		}
 	// 		if(x <= goalX+5 && x >= goalX-5){
 	// 			counterj = 1;
 	// 			// myfile << "===== CRITICAL2 =====\n";
@@ -180,6 +121,70 @@ void findAngle(){
 	// 	}
 	// 	i += counteri;
 	// }
+	///////////////////////////////////////////////////////////////
+	int is_ok = 0;
+	while(i <= limit_angle[0].b){
+		j = limit_angle[1].a;
+		while(j <= limit_angle[1].b){
+			// k = limit_angle[2].a;
+			// while(k <= limit_angle[2].b){
+				input_theta(i, 0);
+				input_theta(j, 1);
+				input_theta(0, 2);
+				input_theta(0, 3);
+				for(int i = 0 ; i < 4 ; i++){
+					reference_frame_calculator(i);
+				}
+				goal_calculator(1,3);
+				//myfile << "ID1: " << i << " ID2: " << j << " ID3: " << k << " ( " << getX() << " , " << getY() << " )\n\n";
+				x = getX();
+				y = getY();
+				if(x <= goalX+1 && x >= goalX-1){
+					// counterk = 1;
+					// myfile << "===== CRITICAL1 =====\n";
+					if(y <= goalY+1 && y >= goalY-1){
+						myfile << "=================\n";
+						myfile << "ID1: " << i << " ID2: " << j << " ( " << getX() << " , " << getY() << " )\n";
+						myfile << "DIFF X: " << x-goalX << " ,Y: " << y-goalY << " \n";
+						tmp = abs(x-goalX) + abs(y-goalY);
+						myfile << "SUM DIFF =  " << tmp << " \n\n";
+						if(diff > tmp){
+							diff = tmp;
+							answer.a = x;
+							answer.b = y;
+							answer_Angle[0] = i;
+							answer_Angle[1] = j;
+							// answer_Angle[2] = k;
+						}
+					}
+				}
+				// else{
+					// counterk = 10;
+				// }
+				// k += counterk;
+			// }
+			if(x <= goalX+5 && x >= goalX-5){
+				counterj = 1;
+				// myfile << "===== CRITICAL2 =====\n";
+			}
+			else{
+				counterj = 10;
+			}
+			j += counterj;
+		}
+		if(x <= goalX+5 && x >= goalX-5){
+			counteri = 1;
+			is_ok = 1;
+			// myfile << "===== CRITICAL3 =====\n";
+		}
+		else{
+			if(!is_ok)
+				counteri = 10;
+			else
+				counteri = limit_angle[0].b;
+		}
+		i += counteri;
+	}
 
 	myfile << "=====   ANSWER   =====\n";
 	myfile << "DIFF: " << diff <<"\n";

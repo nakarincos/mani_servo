@@ -35,6 +35,8 @@ void mode1();
 void mode2();
 void mode3();
 void resetId4();
+void resetId2();
+void slowdown(int id, int pos);
 
 int mode;
 int speed;
@@ -163,15 +165,19 @@ void mode1(){
 		// if(getchar() == 0x1b)
 		// 	break;
 		// Write goal position
-		cout << "speed(0-1023) : ";
-		cin >> speed;
+		// cout << "speed(0-1023) : ";
+		// cin >> speed;
 		for(int i = 0 ; i < 4 ; i++){
 			cout << "ID "<< i+1 << " position : ";
 			cin >> pos[i];
 		}
 		resetId4();
-		for(int i = 0 ; i < 4 ; i++){
-			dxl_write_word( i+1, P_SPEED_L, speed);
+		resetId2();
+		for(int i = 0 ; i < 2 ; i++){
+			slowdown(i+1, pos[i]);
+		}
+		for(int i = 2 ; i < 4 ; i++){
+			dxl_write_word( i+1, P_SPEED_L, 50);
 			dxl_write_word( i+1, P_GOAL_POSITION_L, pos[i]);
 			check_moving(i+1, pos[i]);
 		}
@@ -183,8 +189,8 @@ void mode2(){
 		// if(getchar() == 0x1b)
 		// 	break;
 		// Write goal position
-		cout << "speed(0-1023) : ";
-		cin >> speed;
+		// cout << "speed(0-1023) : ";
+		// cin >> speed;
 		cout << "ID 1 position(0 - 1023) : ";
 		cin >> pos[0];
 		cout << "ID 2 position(0- 1023) : ";
@@ -201,8 +207,9 @@ void mode2(){
 				resetId4();
 			}
 		}
+		resetId2();
 		for(int i = 0 ; i < 2 ; i++){
-			dxl_write_word( i+1, P_SPEED_L, speed);
+			dxl_write_word( i+1, P_SPEED_L, 50);
 			dxl_write_word( i+1, P_GOAL_POSITION_L, pos[i]);
 			check_moving(i+1, pos[i]);
 		}
@@ -210,16 +217,16 @@ void mode2(){
 }
 void mode3(){
 	//while(1){
-		// Write goal position
-		cout << "speed(0-1023) : ";
-		cin >> speed;
+		// // Write goal position
+		// cout << "speed(0-1023) : ";
+		// cin >> speed;
 		cout << "ID 3 position(0 - 1023) : ";
 		cin >> pos[2];
 		cout << "ID 4 position(200 - 800) : ";
 		cin >> pos[3];
 		for(int i = 2 ; i < 4 ; i++){
 			resetId4();
-			dxl_write_word( i+1, P_SPEED_L, speed);
+			dxl_write_word( i+1, P_SPEED_L, 50);
 			dxl_write_word( i+1, P_GOAL_POSITION_L, pos[i]);
 			check_moving(i+1, pos[i]);
 		}
@@ -227,8 +234,45 @@ void mode3(){
 }
 
 void resetId4(){
+	dxl_write_word( 4, P_SPEED_L, 50);
 	dxl_write_word( 4, P_GOAL_POSITION_L, 512);
 	check_moving(4, 512);
+}
+void resetId2(){
+	slowdown(2,512);
+}
+void slowdown(int id, int pos){
+	int curr = dxl_read_word( id, P_PRESENT_POSITION_L );
+	if(abs(curr-pos) > 100){
+		if(curr > pos){
+			dxl_write_word( id, P_SPEED_L, 10);
+			dxl_write_word( id, P_GOAL_POSITION_L, curr-50);
+			check_moving(id, curr-50);
+			dxl_write_word( id, P_SPEED_L, 25);
+			dxl_write_word( id, P_GOAL_POSITION_L, pos+50);
+			check_moving(id, pos+50);
+			dxl_write_word( id, P_SPEED_L, 10);
+			dxl_write_word( id, P_GOAL_POSITION_L, pos);
+			check_moving(id, pos);
+		}
+		else{
+			dxl_write_word( id, P_SPEED_L, 10);
+			dxl_write_word( id, P_GOAL_POSITION_L, curr+50);
+			check_moving(id, curr+50);
+			dxl_write_word( id, P_SPEED_L, 25);
+			dxl_write_word( id, P_GOAL_POSITION_L, pos-50);
+			check_moving(id, pos-50);
+			dxl_write_word( id, P_SPEED_L, 10);
+			dxl_write_word( id, P_GOAL_POSITION_L, pos);
+			check_moving(id, pos);
+		}
+	}
+	else{
+		dxl_write_word( id, P_SPEED_L, 25);
+		dxl_write_word( id, P_GOAL_POSITION_L, pos);
+		check_moving(id, pos);
+	}
+	
 }
 
 void check_moving(int id, int pos){
